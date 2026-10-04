@@ -78,8 +78,43 @@ function createCard(char) {
     createBadge("secondary", `Stories: ${char.stories.available}`)
   );
 
-  card.append(img, body);
+    const accordion = createEl("div", ["accordion", "accordion-flush"]);
+  accordion.id = `accordion-${char.id}`;
+  accordion.append(
+    createAccordionItem(char.id, "comics", "Comics", char.comics.items),
+    createAccordionItem(char.id, "series", "Series", char.series.items)
+  );
+  card.append(img, body, accordion);
   col.appendChild(card);
   return col;
+}
+
+function createAccordionItem(id, type, title, items) {
+  const item = createEl("div", ["accordion-item"]);
+
+  const header = createEl("h2", ["accordion-header"]);
+  header.id = `heading-${type}-${id}`;
+
+  const button = createEl("button", ["accordion-button", "collapsed"], title);
+  button.setAttribute("type", "button");
+  button.setAttribute("data-bs-toggle", "collapse");
+  button.setAttribute("data-bs-target", `#collapse-${type}-${id}`);
+  button.setAttribute("aria-expanded", "false");
+  button.setAttribute("aria-controls", `collapse-${type}-${id}`);
+  header.appendChild(button);
+
+  const collapse = createEl("div", ["accordion-collapse", "collapse"]);
+  collapse.id = `collapse-${type}-${id}`;
+  collapse.setAttribute("aria-labelledby", header.id);
+  collapse.setAttribute("data-bs-parent", `#accordion-${id}`);
+
+  const list = createEl("ul", ["list-group", "list-group-flush"]);
+  for (let i of items) {
+    list.appendChild(createEl("li", ["list-group-item"], i.name));
+  }
+  collapse.appendChild(list);
+
+  item.append(header, collapse);
+  return item;
 }
 
