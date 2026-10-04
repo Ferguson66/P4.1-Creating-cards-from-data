@@ -47,6 +47,10 @@ function createEl(tag, classes = [], text = "") {
   return element;
 }
 
+function createBadge(color, text) {
+  return createEl("span", ["badge", `text-bg-${color}`, "me-1"], text);
+}
+
 function createCard(char) {
   const col = createEl("div", ["col-12", "col-sm-6", "col-lg-4", "col-xl-3"]);
   const card = createEl("div", ["card", "h-100", "shadow-sm"]);
@@ -59,9 +63,23 @@ function createCard(char) {
   img.setAttribute("alt", char.name);
 
   const body = createEl("div", ["card-body"]);
-  body.appendChild(createEl("h5", ["card-title"], char.name));
+  const title = createEl("h5", ["card-title"], char.name);
+  const description = createEl(
+    "p",
+    ["card-text"],
+    char.description.trim() || "No description available."
+  );
+
+  body.append(
+    title,
+    description,
+    createBadge("danger", `Comics: ${char.comics.available}`),
+    createBadge("primary", `Series: ${char.series.available}`),
+    createBadge("secondary", `Stories: ${char.stories.available}`)
+  );
 
   card.append(img, body);
   col.appendChild(card);
   return col;
 }
+
